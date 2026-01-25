@@ -1,49 +1,33 @@
-library(countrycode)
-library(countrycode)
 library(dplyr)
+library(stringr)
+library(countrycode)
 
-# Country List with ISO to identify countries within TS Snippets
+# Base country list (ISO3 + English names)
 countries <- countrycode::codelist %>%
   select(country.name.en, iso3c) %>%
   distinct() %>%
-  filter(!is.na(iso3c))
-
-
-countries <- countries %>%
+  filter(!is.na(iso3c)) %>%
   rename(
     iso = iso3c,
-    country_name = country.name.en
+    country = country.name.en
   )
 
-
-aliases <- data.frame(
-  iso = c(
-    "USA","USA","USA","USA",
-    "GBR","GBR",
-    "RUS",
-    "KOR"
-  ),
-  alias = c(
-    "United States",
-    "US",
-    "U\\.S\\.",
-    "America",
-    "United Kingdom",
-    "Britain",
-    "Russia",
-    "South Korea"
-  ),
-  stringsAsFactors = FALSE
+# different spellings of countries
+aliases <- tibble::tibble(
+  iso = c("USA","USA","USA","USA",
+          "GBR","GBR",
+          "RUS",
+          "KOR"),
+  alias = c("United States","US","U\\.S\\.","America",
+            "United Kingdom","Britain",
+            "Russia",
+            "South Korea")
 )
 
+# build regex pattern to identify different spelling (ed, s) of country names
 countries_patterns <- countries %>%
   mutate(
-    pattern = paste0(
-      "\\b",
-      country_name,
-      "(s)?",
-      "\\b"
-    )
+    pattern = paste0("\\b", country, "(s)?\\b")
   ) %>%
   select(iso, pattern)
 
@@ -53,30 +37,29 @@ aliases_patterns <- aliases %>%
   ) %>%
   select(iso, pattern)
 
-country_patterns <- rbind(countries_patterns, aliases_patterns)
-
-head(country_patterns)
+country_patterns <- bind_rows(countries_patterns, aliases_patterns)
 
 
-# Use Iso Finder
-ts_iso_found <- data.frame(
-  snippet_id = integer(),
-  iso = character(),
-  stringsAsFactors = FALSE
-)
+# create new variables in TS_Disaster (empty)
+TS_Disaster <- TS_Disaster %>%
+  mutate(
+    country_auto = NA_character_,
+    country_manual = NA_character_,
+    country_final = NA_character_
+  )
 
-n_snippets <- nrow(ts_data_clean)
 
-for (i in seq_len(n_snippets)) {
+
+# Automatic Country Detection in TS_Disaster english text (first country mentioned only) --> output ISO3
+for (i in seq_len(nrow(TS_Disaster))) {
   
-  text <- ts_data_clean$ts_text_en[i]
+  text <- TS_Disaster$ts_text_en[i]
   
   if (is.na(text) || text == "") next
   
   found_iso <- character(0)
   
   for (j in seq_len(nrow(country_patterns))) {
-    
     if (grepl(
       country_patterns$pattern[j],
       text,
@@ -90,75 +73,20 @@ for (i in seq_len(n_snippets)) {
   found_iso <- unique(found_iso)
   
   if (length(found_iso) > 0) {
-    ts_iso_found <- rbind(
-      ts_iso_found,
-      data.frame(
-        snippet_id = i,
-        iso = found_iso,
-        stringsAsFactors = FALSE
-      )
-    )
-  }
-  
-# Progression Bar
-  if (i %% 1000 == 0) {
-    cat("Processed", i, "of", n_snippets, "snippets\n")
+    TS_Disaster$country_auto[i] <- found_iso[1]  # erstes Land
   }
 }
-# Check top countries (result)
-sort(table(ts_iso_found$iso), decreasing = TRUE)[1:15]
-nrow(ts_iso_found)
-
-
-# Match Results with TS 
-ts_iso_wide <- ts_iso_found %>%
-  group_by(snippet_id) %>%
-  mutate(n = row_number()) %>%
-  filter(n <= 5) %>%          # max. 5 Länder pro Snippet
-  pivot_wider(
-    names_from = n,
-    values_from = iso,
-    names_prefix = "country_"
-  )
-
-
-ts_data_clean <- ts_data_clean %>%
-  mutate(snippet_id = row_number()) %>%
-  left_join(ts_iso_wide, by = "snippet_id")
-
-head(ts_iso_wide)
-
-
-
-
-
-
-
-# Matching TS ISO Results with emdat ISO
-emdat_events$coverage_auto_n <- 0L
-
-for (i in seq_len(nrow(emdat_events))) {
-  
-  event <- emdat_events[i, ]
-  
-  matches <- ts_data_clean %>%
-    filter(
-      date >= event$start_date,
-      date <= event$window_end,
-      country_1 == event$iso |
-        country_2 == event$iso |
-        country_3 == event$iso |
-        country_4 == event$iso |
-        country_5 == event$iso
-    )
-  
-  emdat_events$coverage_auto_n[i] <- nrow(matches)
-}
-
-emdat_events$covered_auto_yn <- emdat_events$coverage_auto_n > 0
-
 
 # Check results
-summary(emdat_events$coverage_auto_n)
-quantile(emdat_events$coverage_auto_n, probs = c(.9, .95, .99))
-table(emdat_events$covered_auto_yn)
+table(is.na(TS_Disaster$country_auto))
+sort(table(TS_Disaster$country_auto), decreasing = TRUE)[1:15]
+TS_Disaster %>%
+  filter(is.na(country_auto)) %>%
+  slice_sample(n = 10) %>%
+  pull(ts_text_en)
+
+write.csv(
+  TS_Disaster,
+  "TS_Disaster_CountryCoding.xlsx",
+  row.names = FALSE
+)
