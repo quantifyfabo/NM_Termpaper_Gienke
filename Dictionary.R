@@ -1,3 +1,8 @@
+## Purpose of this file
+# This file identifies disaster-related news articles in the Tagesschau foreign news dataset. The goal is to separate articles about natural disasters from all other foreign news.
+# A dictionary-based approach is used. A list of disaster-related terms is created based on EM-DAT disaster types. Regular expressions are used to capture common linguistic variations.
+# The output consists of two datasets: disaster-related and non-disaster articles.
+
 library(stringr)
 library(quanteda)
 
