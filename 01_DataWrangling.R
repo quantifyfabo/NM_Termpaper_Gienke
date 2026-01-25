@@ -54,8 +54,8 @@ window_days <- 7
 emdat_clean$window_start <- emdat_clean$start_date - window_days
 emdat_clean$window_end   <- emdat_clean$end_date   + window_days
 
-emdat_events$window_length_days <-
-  as.numeric(emdat_events$window_end - emdat_events$window_start)
+emdat_clean$window_length_days <-
+  as.numeric(emdat_clean$window_end - emdat_clean$window_start)
 
 
 
@@ -99,4 +99,5 @@ emdat_events <- emdat_clean %>%
 emdat_events$start_date  <- as.Date(emdat_events$start_date, origin = "1970-01-01")
 emdat_events$window_end  <- as.Date(emdat_events$window_end, origin = "1970-01-01")
 
+# make ts date column as.Date type
 ts_data_clean$date <- as.Date(ts_data_clean$date)
