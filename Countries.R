@@ -16,6 +16,8 @@
 #
 # The output is a merged country-level dataset combining real disaster exposure
 # and media coverage.
+#
+# Controll variables on GDP, Population and VDEM are added
 
 library(dplyr)
 library(stringr)
@@ -191,3 +193,60 @@ analysis_country <- analysis_country %>%
   mutate(
     ts_articles = ifelse(is.na(ts_articles), 0, ts_articles)
   )
+
+# add region absed on iso
+analysis_country <- analysis_country %>%
+  mutate(
+    region = countrycode(
+      sourcevar = iso,
+      origin = "iso3c",
+      destination = "region",
+      warn = FALSE
+    )
+  )
+
+
+
+# Add Data for Controll variables
+
+# GDP by World Bank 2023
+gdp_country <- read.csv(
+  '/Users/fabiangi/Documents/Goethe Uni/Semester 3/VP Naturkatastrophen/Paper_Project/Datasets/GDP_Worldbank.csv',
+  skip = 4
+)
+gdp_country <- gdp_country %>%
+  select(
+    iso = Country.Code,
+    gdp_2023 = X2023
+  ) %>%
+  mutate(
+    gdp_2023 = gdp_2023 / 1e6
+  )
+
+# Population by World Bank 2023
+population_country <- read.csv('/Users/fabiangi/Documents/Goethe Uni/Semester 3/VP Naturkatastrophen/Paper_Project/Datasets/Population_Worldbank.csv',
+                               skip = 4)
+population_country <- population_country %>%
+  select(
+    iso = Country.Code,
+    population_2023 = X2023
+  ) %>%
+  mutate(
+    population_2023 = population_2023 / 1e6
+  )
+
+# Varieties of Democracy V-DEM Score (0-1)
+vdem <- read.csv('/Users/fabiangi/Documents/Goethe Uni/Semester 3/VP Naturkatastrophen/Paper_Project/Datasets/V-Dem-CY-Core-v15.csv')
+
+vdem_country <- vdem %>%
+  filter(year == 2023) %>%
+  select(
+    iso = country_text_id,
+    democracy_vdem = v2x_libdem
+  )
+
+# Merge control variables to the country dataset
+analysis_country <- analysis_country %>%
+  left_join(gdp_country, by = "iso") %>%
+  left_join(population_country, by = "iso") %>%
+  left_join(vdem_country, by = "iso")
