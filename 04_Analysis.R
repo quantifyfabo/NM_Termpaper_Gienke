@@ -13,13 +13,14 @@ library(gt)
 analysis_corr <- analysis_country %>%
   filter(n_events > 0) # minimum of 1 case in emdata
 
-# Pearson corr with n_events and total deaths
+# Pearson corr with n_events and ts articles
 cor(
   analysis_corr$ts_articles,
   analysis_corr$n_events,
   method = "pearson"
 )
 
+# correlation of articles and total deaths
 cor(
   analysis_corr$ts_articles,
   analysis_corr$total_deaths,
@@ -58,7 +59,7 @@ summary(model_deaths)
 # log log combined
 model_both <- lm(
   log(ts_articles + 1) ~ log(n_events + 1) + log(total_deaths + 1),
-  data = analysis_countries
+  data = analysis_country
 )
 
 summary(model_both)
@@ -203,3 +204,45 @@ ggplot(
   )
 
 
+
+
+
+
+
+# Including severety as addiitonal indicators
+# Modell mit Severity Measures
+model_severity <- lm(log(ts_articles + 1) ~ 
+                       log(n_events + 1) +
+                       log(total_deaths + 1) + 
+                       log(total_injured + 1) +
+                       log(total_affected + 1) +
+                       log(gdp_pc_2023) +
+                       log(population_2023) + 
+                       democracy_vdem, 
+                     data = analysis_country_robust)
+
+summary(model_severity)
+
+
+# Use a GLM (Poisson) because ts_articles is a count variable.
+# The model estimates how event frequency and severity affect media coverage.
+# Poisson GLM is appropriate for non-negative integer outcomes and avoids
+# issues from log-transforming many small values or zeros in OLS.
+model_glm <- glm(ts_articles ~ n_events + total_deaths + total_injured + total_affected +
+      log(gdp_pc_2023) + log(population_2023) + democracy_vdem,
+    family = poisson,
+    data = analysis_country_robust)
+
+summary(model_glm)
+
+
+library(MASS)
+
+model_nb <- glm.nb(
+  ts_articles ~ n_events + total_deaths + total_injured +
+    total_affected + log(gdp_pc_2023) + log(population_2023) +
+    democracy_vdem,
+  data = analysis_country_robust
+)
+
+summary(model_nb)
