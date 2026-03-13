@@ -1,0 +1,653 @@
+---
+title: "Tagesschau_API"
+author: "F_Gienke"
+date: "2025-12-17"
+output: html_document
+---
+
+# Loading packages
+```{r}
+library(rvest)
+library(stringr)
+library(dplyr)
+```
+
+# Preambel
+```{r}
+# track time
+start_time <- Sys.time()
+```
+
+The following code chunks contain the Webscraping from the Tagesschau Archive https://www.tagesschau.de/archiv
+
+- Each month receives a code chunk. This simplifies the loop, which adjusts the days -DD- in the base URL. Since the months have different numbers of days (28-31), the loop is adjusted individually to each months.
+
+- Finally all 12 Datasets are merged creating one Dataset of all Articles published in the online archive of Tagesschau in 2025.
+
+!! Please note that running all code might be time consuming (on my laptop it took 21 min).
+
+
+
+# Loop for Webscraping the Tagesschau Archive in January of 2025
+```{r}
+# URL of Tagesschau Archives, Category "Foreign"
+base_url <- "https://www.tagesschau.de/archiv?datum=2025-01-" # letzte Zahl durch Tag im Monat im Format -DD- austauschen
+
+headlines_list <- list()
+texts_list <- list()
+dates_list <- list()
+
+
+# Loop
+for (day in 1:31) {
+  # Use wrapper for correct formatting in -DD-
+  day_str <- sprintf("%02d", day)  
+  
+  # Base URL + Day
+  url <- paste0(base_url, day_str, "&filter=ausland")
+  
+  # load website
+  Tagesschau_v2_page <- read_html(url)
+  
+  # extract data with nodes: "headline, text, date"
+  Tagesschau_node_headline <- html_nodes(Tagesschau_v2_page, ".teaser-right__headline")
+  Tagesschau_node_text <- html_nodes(Tagesschau_v2_page, ".teaser-right__shorttext")
+  Tagesschau_node_date <- html_nodes(Tagesschau_v2_page, ".teaser-right__date")
+  
+  # load text from nodes
+  Tagesschau_html_headline <- html_text(Tagesschau_node_headline)
+  Tagesschau_html_text <- html_text(Tagesschau_node_text)
+  Tagesschau_html_date <- html_text(Tagesschau_node_date)
+  
+  # Safe Data to empty list
+  headlines_list[[day]] <- Tagesschau_html_headline
+  texts_list[[day]] <- Tagesschau_html_text
+  dates_list[[day]] <- Tagesschau_html_date
+}
+
+# Create Data Frame from lists
+TS_For_JAN <- data.frame(
+  headline = unlist(headlines_list),
+  text = unlist(texts_list),
+  date = unlist(dates_list),
+  stringsAsFactors = FALSE)
+
+```
+
+
+# Loop for Webscraping the Tagesschau Archive in February of 2025
+```{r}
+# URL of Tagesschau Archives, Category "Foreign"
+base_url <- "https://www.tagesschau.de/archiv?datum=2025-02-" # letzte Zahl durch Tag im Monat im Format -DD- austauschen
+
+headlines_list <- list()
+texts_list <- list()
+dates_list <- list()
+
+
+# Loop
+for (day in 1:28) {
+  # Use wrapper for correct formatting in -DD-
+  day_str <- sprintf("%02d", day)  
+  
+  # Base URL + Day
+  url <- paste0(base_url, day_str, "&filter=ausland")
+  
+  # load website
+  Tagesschau_v2_page <- read_html(url)
+  
+  # extract data with nodes: "headline, text, date"
+  Tagesschau_node_headline <- html_nodes(Tagesschau_v2_page, ".teaser-right__headline")
+  Tagesschau_node_text <- html_nodes(Tagesschau_v2_page, ".teaser-right__shorttext")
+  Tagesschau_node_date <- html_nodes(Tagesschau_v2_page, ".teaser-right__date")
+  
+  # load text from nodes
+  Tagesschau_html_headline <- html_text(Tagesschau_node_headline)
+  Tagesschau_html_text <- html_text(Tagesschau_node_text)
+  Tagesschau_html_date <- html_text(Tagesschau_node_date)
+  
+  # Safe Data to empty list
+  headlines_list[[day]] <- Tagesschau_html_headline
+  texts_list[[day]] <- Tagesschau_html_text
+  dates_list[[day]] <- Tagesschau_html_date
+}
+
+# Create Data Frame from lists
+TS_For_FEB <- data.frame(
+  headline = unlist(headlines_list),
+  text = unlist(texts_list),
+  date = unlist(dates_list),
+  stringsAsFactors = FALSE)
+
+```
+
+
+
+
+# Loop for Webscraping the Tagesschau Archive in March of 2025
+```{r}
+# URL of Tagesschau Archives, Category "Foreign"
+base_url <- "https://www.tagesschau.de/archiv?datum=2025-03-" # letzte Zahl durch Tag im Monat im Format -DD- austauschen
+
+headlines_list <- list()
+texts_list <- list()
+dates_list <- list()
+
+
+# Loop
+for (day in 1:31) {
+  # Use wrapper for correct formatting in -DD-
+  day_str <- sprintf("%02d", day)  
+  
+  # Base URL + Day
+  url <- paste0(base_url, day_str, "&filter=ausland")
+  
+  # load website
+  Tagesschau_v2_page <- read_html(url)
+  
+  # extract data with nodes: "headline, text, date"
+  Tagesschau_node_headline <- html_nodes(Tagesschau_v2_page, ".teaser-right__headline")
+  Tagesschau_node_text <- html_nodes(Tagesschau_v2_page, ".teaser-right__shorttext")
+  Tagesschau_node_date <- html_nodes(Tagesschau_v2_page, ".teaser-right__date")
+  
+  # load text from nodes
+  Tagesschau_html_headline <- html_text(Tagesschau_node_headline)
+  Tagesschau_html_text <- html_text(Tagesschau_node_text)
+  Tagesschau_html_date <- html_text(Tagesschau_node_date)
+  
+  # Safe Data to empty list
+  headlines_list[[day]] <- Tagesschau_html_headline
+  texts_list[[day]] <- Tagesschau_html_text
+  dates_list[[day]] <- Tagesschau_html_date
+}
+
+# Create Data Frame from lists
+TS_For_MAR <- data.frame(
+  headline = unlist(headlines_list),
+  text = unlist(texts_list),
+  date = unlist(dates_list),
+  stringsAsFactors = FALSE)
+
+```
+
+
+# Loop for Webscraping the Tagesschau Archive in April of 2025
+```{r}
+# URL of Tagesschau Archives, Category "Foreign"
+base_url <- "https://www.tagesschau.de/archiv?datum=2025-04-" # letzte Zahl durch Tag im Monat im Format -DD- austauschen
+
+headlines_list <- list()
+texts_list <- list()
+dates_list <- list()
+
+
+# Loop
+for (day in 1:30) {
+  # Use wrapper for correct formatting in -DD-
+  day_str <- sprintf("%02d", day)  
+  
+  # Base URL + Day
+  url <- paste0(base_url, day_str, "&filter=ausland")
+  
+  # load website
+  Tagesschau_v2_page <- read_html(url)
+  
+  # extract data with nodes: "headline, text, date"
+  Tagesschau_node_headline <- html_nodes(Tagesschau_v2_page, ".teaser-right__headline")
+  Tagesschau_node_text <- html_nodes(Tagesschau_v2_page, ".teaser-right__shorttext")
+  Tagesschau_node_date <- html_nodes(Tagesschau_v2_page, ".teaser-right__date")
+  
+  # load text from nodes
+  Tagesschau_html_headline <- html_text(Tagesschau_node_headline)
+  Tagesschau_html_text <- html_text(Tagesschau_node_text)
+  Tagesschau_html_date <- html_text(Tagesschau_node_date)
+  
+  # Safe Data to empty list
+  headlines_list[[day]] <- Tagesschau_html_headline
+  texts_list[[day]] <- Tagesschau_html_text
+  dates_list[[day]] <- Tagesschau_html_date
+}
+
+# Create Data Frame from lists
+TS_For_APR <- data.frame(
+  headline = unlist(headlines_list),
+  text = unlist(texts_list),
+  date = unlist(dates_list),
+  stringsAsFactors = FALSE)
+
+```
+
+# Loop for Webscraping the Tagesschau Archive in May of 2025
+```{r}
+# URL of Tagesschau Archives, Category "Foreign"
+base_url <- "https://www.tagesschau.de/archiv?datum=2025-05-" # letzte Zahl durch Tag im Monat im Format -DD- austauschen
+
+headlines_list <- list()
+texts_list <- list()
+dates_list <- list()
+
+
+# Loop
+for (day in 1:31) {
+  # Use wrapper for correct formatting in -DD-
+  day_str <- sprintf("%02d", day)  
+  
+  # Base URL + Day
+  url <- paste0(base_url, day_str, "&filter=ausland")
+  
+  # load website
+  Tagesschau_v2_page <- read_html(url)
+  
+  # extract data with nodes: "headline, text, date"
+  Tagesschau_node_headline <- html_nodes(Tagesschau_v2_page, ".teaser-right__headline")
+  Tagesschau_node_text <- html_nodes(Tagesschau_v2_page, ".teaser-right__shorttext")
+  Tagesschau_node_date <- html_nodes(Tagesschau_v2_page, ".teaser-right__date")
+  
+  # load text from nodes
+  Tagesschau_html_headline <- html_text(Tagesschau_node_headline)
+  Tagesschau_html_text <- html_text(Tagesschau_node_text)
+  Tagesschau_html_date <- html_text(Tagesschau_node_date)
+  
+  # Safe Data to empty list
+  headlines_list[[day]] <- Tagesschau_html_headline
+  texts_list[[day]] <- Tagesschau_html_text
+  dates_list[[day]] <- Tagesschau_html_date
+}
+
+# Create Data Frame from lists
+TS_For_MAY <- data.frame(
+  headline = unlist(headlines_list),
+  text = unlist(texts_list),
+  date = unlist(dates_list),
+  stringsAsFactors = FALSE)
+
+```
+
+# Loop for Webscraping the Tagesschau Archive in June of 2025
+```{r}
+# URL of Tagesschau Archives, Category "Foreign"
+base_url <- "https://www.tagesschau.de/archiv?datum=2025-06-" # letzte Zahl durch Tag im Monat im Format -DD- austauschen
+
+headlines_list <- list()
+texts_list <- list()
+dates_list <- list()
+
+
+# Loop
+for (day in 1:30) {
+  # Use wrapper for correct formatting in -DD-
+  day_str <- sprintf("%02d", day)  
+  
+  # Base URL + Day
+  url <- paste0(base_url, day_str, "&filter=ausland")
+  
+  # load website
+  Tagesschau_v2_page <- read_html(url)
+  
+  # extract data with nodes: "headline, text, date"
+  Tagesschau_node_headline <- html_nodes(Tagesschau_v2_page, ".teaser-right__headline")
+  Tagesschau_node_text <- html_nodes(Tagesschau_v2_page, ".teaser-right__shorttext")
+  Tagesschau_node_date <- html_nodes(Tagesschau_v2_page, ".teaser-right__date")
+  
+  # load text from nodes
+  Tagesschau_html_headline <- html_text(Tagesschau_node_headline)
+  Tagesschau_html_text <- html_text(Tagesschau_node_text)
+  Tagesschau_html_date <- html_text(Tagesschau_node_date)
+  
+  # Safe Data to empty list
+  headlines_list[[day]] <- Tagesschau_html_headline
+  texts_list[[day]] <- Tagesschau_html_text
+  dates_list[[day]] <- Tagesschau_html_date
+}
+
+# Create Data Frame from lists
+TS_For_JUN <- data.frame(
+  headline = unlist(headlines_list),
+  text = unlist(texts_list),
+  date = unlist(dates_list),
+  stringsAsFactors = FALSE)
+
+```
+
+# Loop for Webscraping the Tagesschau Archive in July of 2025
+```{r}
+# URL of Tagesschau Archives, Category "Foreign"
+base_url <- "https://www.tagesschau.de/archiv?datum=2025-07-" # letzte Zahl durch Tag im Monat im Format -DD- austauschen
+
+headlines_list <- list()
+texts_list <- list()
+dates_list <- list()
+
+
+# Loop
+for (day in 1:31) {
+  # Use wrapper for correct formatting in -DD-
+  day_str <- sprintf("%02d", day)  
+  
+  # Base URL + Day
+  url <- paste0(base_url, day_str, "&filter=ausland")
+  
+  # load website
+  Tagesschau_v2_page <- read_html(url)
+  
+  # extract data with nodes: "headline, text, date"
+  Tagesschau_node_headline <- html_nodes(Tagesschau_v2_page, ".teaser-right__headline")
+  Tagesschau_node_text <- html_nodes(Tagesschau_v2_page, ".teaser-right__shorttext")
+  Tagesschau_node_date <- html_nodes(Tagesschau_v2_page, ".teaser-right__date")
+  
+  # load text from nodes
+  Tagesschau_html_headline <- html_text(Tagesschau_node_headline)
+  Tagesschau_html_text <- html_text(Tagesschau_node_text)
+  Tagesschau_html_date <- html_text(Tagesschau_node_date)
+  
+  # Safe Data to empty list
+  headlines_list[[day]] <- Tagesschau_html_headline
+  texts_list[[day]] <- Tagesschau_html_text
+  dates_list[[day]] <- Tagesschau_html_date
+}
+
+# Create Data Frame from lists
+TS_For_JUL <- data.frame(
+  headline = unlist(headlines_list),
+  text = unlist(texts_list),
+  date = unlist(dates_list),
+  stringsAsFactors = FALSE)
+
+```
+
+# Loop for Webscraping the Tagesschau Archive in August of 2025
+```{r}
+# URL of Tagesschau Archives, Category "Foreign"
+base_url <- "https://www.tagesschau.de/archiv?datum=2025-08-" # letzte Zahl durch Tag im Monat im Format -DD- austauschen
+
+headlines_list <- list()
+texts_list <- list()
+dates_list <- list()
+
+
+# Loop
+for (day in 1:31) {
+  # Use wrapper for correct formatting in -DD-
+  day_str <- sprintf("%02d", day)  
+  
+  # Base URL + Day
+  url <- paste0(base_url, day_str, "&filter=ausland")
+  
+  # load website
+  Tagesschau_v2_page <- read_html(url)
+  
+  # extract data with nodes: "headline, text, date"
+  Tagesschau_node_headline <- html_nodes(Tagesschau_v2_page, ".teaser-right__headline")
+  Tagesschau_node_text <- html_nodes(Tagesschau_v2_page, ".teaser-right__shorttext")
+  Tagesschau_node_date <- html_nodes(Tagesschau_v2_page, ".teaser-right__date")
+  
+  # load text from nodes
+  Tagesschau_html_headline <- html_text(Tagesschau_node_headline)
+  Tagesschau_html_text <- html_text(Tagesschau_node_text)
+  Tagesschau_html_date <- html_text(Tagesschau_node_date)
+  
+  # Safe Data to empty list
+  headlines_list[[day]] <- Tagesschau_html_headline
+  texts_list[[day]] <- Tagesschau_html_text
+  dates_list[[day]] <- Tagesschau_html_date
+}
+
+# Create Data Frame from lists
+TS_For_AUG <- data.frame(
+  headline = unlist(headlines_list),
+  text = unlist(texts_list),
+  date = unlist(dates_list),
+  stringsAsFactors = FALSE)
+
+```
+
+# Loop for Webscraping the Tagesschau Archive in September of 2025
+```{r}
+# URL of Tagesschau Archives, Category "Foreign"
+base_url <- "https://www.tagesschau.de/archiv?datum=2025-09-" # letzte Zahl durch Tag im Monat im Format -DD- austauschen
+
+headlines_list <- list()
+texts_list <- list()
+dates_list <- list()
+
+
+# Loop
+for (day in 1:30) {
+  # Use wrapper for correct formatting in -DD-
+  day_str <- sprintf("%02d", day)  
+  
+  # Base URL + Day
+  url <- paste0(base_url, day_str, "&filter=ausland")
+  
+  # load website
+  Tagesschau_v2_page <- read_html(url)
+  
+  # extract data with nodes: "headline, text, date"
+  Tagesschau_node_headline <- html_nodes(Tagesschau_v2_page, ".teaser-right__headline")
+  Tagesschau_node_text <- html_nodes(Tagesschau_v2_page, ".teaser-right__shorttext")
+  Tagesschau_node_date <- html_nodes(Tagesschau_v2_page, ".teaser-right__date")
+  
+  # load text from nodes
+  Tagesschau_html_headline <- html_text(Tagesschau_node_headline)
+  Tagesschau_html_text <- html_text(Tagesschau_node_text)
+  Tagesschau_html_date <- html_text(Tagesschau_node_date)
+  
+  # Safe Data to empty list
+  headlines_list[[day]] <- Tagesschau_html_headline
+  texts_list[[day]] <- Tagesschau_html_text
+  dates_list[[day]] <- Tagesschau_html_date
+}
+
+# Create Data Frame from lists
+TS_For_SEP <- data.frame(
+  headline = unlist(headlines_list),
+  text = unlist(texts_list),
+  date = unlist(dates_list),
+  stringsAsFactors = FALSE)
+
+```
+
+# Loop for Webscraping the Tagesschau Archive in October of 2025
+```{r}
+# URL of Tagesschau Archives, Category "Foreign"
+base_url <- "https://www.tagesschau.de/archiv?datum=2025-10-" # letzte Zahl durch Tag im Monat im Format -DD- austauschen
+
+headlines_list <- list()
+texts_list <- list()
+dates_list <- list()
+
+
+# Loop
+for (day in 1:31) {
+  # Use wrapper for correct formatting in -DD-
+  day_str <- sprintf("%02d", day)  
+  
+  # Base URL + Day
+  url <- paste0(base_url, day_str, "&filter=ausland")
+  
+  # load website
+  Tagesschau_v2_page <- read_html(url)
+  
+  # extract data with nodes: "headline, text, date"
+  Tagesschau_node_headline <- html_nodes(Tagesschau_v2_page, ".teaser-right__headline")
+  Tagesschau_node_text <- html_nodes(Tagesschau_v2_page, ".teaser-right__shorttext")
+  Tagesschau_node_date <- html_nodes(Tagesschau_v2_page, ".teaser-right__date")
+  
+  # load text from nodes
+  Tagesschau_html_headline <- html_text(Tagesschau_node_headline)
+  Tagesschau_html_text <- html_text(Tagesschau_node_text)
+  Tagesschau_html_date <- html_text(Tagesschau_node_date)
+  
+  # Safe Data to empty list
+  headlines_list[[day]] <- Tagesschau_html_headline
+  texts_list[[day]] <- Tagesschau_html_text
+  dates_list[[day]] <- Tagesschau_html_date
+}
+
+# Create Data Frame from lists
+TS_For_OCT <- data.frame(
+  headline = unlist(headlines_list),
+  text = unlist(texts_list),
+  date = unlist(dates_list),
+  stringsAsFactors = FALSE)
+
+```
+
+# Loop for Webscraping the Tagesschau Archive in November of 2025
+```{r}
+# URL of Tagesschau Archives, Category "Foreign"
+base_url <- "https://www.tagesschau.de/archiv?datum=2025-11-" # letzte Zahl durch Tag im Monat im Format -DD- austauschen
+
+headlines_list <- list()
+texts_list <- list()
+dates_list <- list()
+
+
+# Loop
+for (day in 1:30) {
+  # Use wrapper for correct formatting in -DD-
+  day_str <- sprintf("%02d", day)  
+  
+  # Base URL + Day
+  url <- paste0(base_url, day_str, "&filter=ausland")
+  
+  # load website
+  Tagesschau_v2_page <- read_html(url)
+  
+  # extract data with nodes: "headline, text, date"
+  Tagesschau_node_headline <- html_nodes(Tagesschau_v2_page, ".teaser-right__headline")
+  Tagesschau_node_text <- html_nodes(Tagesschau_v2_page, ".teaser-right__shorttext")
+  Tagesschau_node_date <- html_nodes(Tagesschau_v2_page, ".teaser-right__date")
+  
+  # load text from nodes
+  Tagesschau_html_headline <- html_text(Tagesschau_node_headline)
+  Tagesschau_html_text <- html_text(Tagesschau_node_text)
+  Tagesschau_html_date <- html_text(Tagesschau_node_date)
+  
+  # Safe Data to empty list
+  headlines_list[[day]] <- Tagesschau_html_headline
+  texts_list[[day]] <- Tagesschau_html_text
+  dates_list[[day]] <- Tagesschau_html_date
+}
+
+# Create Data Frame from lists
+TS_For_NOV <- data.frame(
+  headline = unlist(headlines_list),
+  text = unlist(texts_list),
+  date = unlist(dates_list),
+  stringsAsFactors = FALSE)
+
+```
+
+# Loop for Webscraping the Tagesschau Archive in December of 2025
+```{r}
+# URL of Tagesschau Archives, Category "Foreign"
+base_url <- "https://www.tagesschau.de/archiv?datum=2025-12-" # letzte Zahl durch Tag im Monat im Format -DD- austauschen
+
+headlines_list <- list()
+texts_list <- list()
+dates_list <- list()
+
+
+# Loop
+for (day in 1:31) {
+  # Use wrapper for correct formatting in -DD-
+  day_str <- sprintf("%02d", day)  
+  
+  # Base URL + Day
+  url <- paste0(base_url, day_str, "&filter=ausland")
+  
+  # load website
+  Tagesschau_v2_page <- read_html(url)
+  
+  # extract data with nodes: "headline, text, date"
+  Tagesschau_node_headline <- html_nodes(Tagesschau_v2_page, ".teaser-right__headline")
+  Tagesschau_node_text <- html_nodes(Tagesschau_v2_page, ".teaser-right__shorttext")
+  Tagesschau_node_date <- html_nodes(Tagesschau_v2_page, ".teaser-right__date")
+  
+  # load text from nodes
+  Tagesschau_html_headline <- html_text(Tagesschau_node_headline)
+  Tagesschau_html_text <- html_text(Tagesschau_node_text)
+  Tagesschau_html_date <- html_text(Tagesschau_node_date)
+  
+  # Safe Data to empty list
+  headlines_list[[day]] <- Tagesschau_html_headline
+  texts_list[[day]] <- Tagesschau_html_text
+  dates_list[[day]] <- Tagesschau_html_date
+}
+
+# Create Data Frame from lists
+TS_For_DEC <- data.frame(
+  headline = unlist(headlines_list),
+  text = unlist(texts_list),
+  date = unlist(dates_list),
+  stringsAsFactors = FALSE)
+
+```
+
+# Loop for Webscraping the Tagesschau Archive in January of 2025
+```{r}
+# URL of Tagesschau Archives, Category "Foreign"
+base_url <- "https://www.tagesschau.de/archiv?datum=2025-01-" # letzte Zahl durch Tag im Monat im Format -DD- austauschen
+
+headlines_list <- list()
+texts_list <- list()
+dates_list <- list()
+
+
+# Loop
+for (day in 1:31) {
+  # Use wrapper for correct formatting in -DD-
+  day_str <- sprintf("%02d", day)  
+  
+  # Base URL + Day
+  url <- paste0(base_url, day_str, "&filter=ausland")
+  
+  # load website
+  Tagesschau_v2_page <- read_html(url)
+  
+  # extract data with nodes: "headline, text, date"
+  Tagesschau_node_headline <- html_nodes(Tagesschau_v2_page, ".teaser-right__headline")
+  Tagesschau_node_text <- html_nodes(Tagesschau_v2_page, ".teaser-right__shorttext")
+  Tagesschau_node_date <- html_nodes(Tagesschau_v2_page, ".teaser-right__date")
+  
+  # load text from nodes
+  Tagesschau_html_headline <- html_text(Tagesschau_node_headline)
+  Tagesschau_html_text <- html_text(Tagesschau_node_text)
+  Tagesschau_html_date <- html_text(Tagesschau_node_date)
+  
+  # Safe Data to empty list
+  headlines_list[[day]] <- Tagesschau_html_headline
+  texts_list[[day]] <- Tagesschau_html_text
+  dates_list[[day]] <- Tagesschau_html_date
+}
+
+# Create Data Frame from lists
+TS_For_JAN25 <- data.frame(
+  headline = unlist(headlines_list),
+  text = unlist(texts_list),
+  date = unlist(dates_list),
+  stringsAsFactors = FALSE)
+
+```
+
+
+# Results
+```{r}
+
+TS_ALL_Foreign_RAW_2025 <- bind_rows(TS_For_JAN, TS_For_FEB, TS_For_MAR, 
+                                TS_For_APR, TS_For_MAY, TS_For_JUN, 
+                                TS_For_JUL, TS_For_AUG, TS_For_SEP, 
+                                TS_For_OCT, TS_For_NOV, TS_For_DEC
+                                )
+
+
+
+
+end_time <- Sys.time()
+time_taken <- end_time - start_time
+time_taken
+
+write.csv(TS_ALL_Foreign_RAW_2025, file = "/Users/fabiangi/Documents/Goethe Uni/Semester 4/Master/TS_Webscrape/TS_ALL_Foreign_RAW_2025_Full2.csv", row.names = FALSE)
+```
+
