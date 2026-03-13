@@ -246,3 +246,19 @@ model_nb <- glm.nb(
 )
 
 summary(model_nb)
+
+
+
+lm_model_distance <- lm(
+  log(ts_articles + 1) ~ 
+    log(n_events + 1) +
+    log(total_deaths +1) +
+    log(total_affected +1) +
+    log(gdp_2023) +
+    log(population_2023) +
+    log(dist_to_germany) +
+    democracy_vdem,
+  data = analysis_country_robust
+)
+
+summary(lm_model_distance)

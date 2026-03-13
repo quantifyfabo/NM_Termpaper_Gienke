@@ -651,3 +651,4 @@ time_taken
 write.csv(TS_ALL_Foreign_RAW_2025, file = "/Users/fabiangi/Documents/Goethe Uni/Semester 4/Master/TS_Webscrape/TS_ALL_Foreign_RAW_2025_Full2.csv", row.names = FALSE)
 ```
 
+#finished
