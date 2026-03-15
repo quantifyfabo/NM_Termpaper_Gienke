@@ -24,8 +24,6 @@ The following code chunks contain the Webscraping from the Tagesschau Archive ht
 
 - Finally all 12 Datasets are merged creating one Dataset of all Articles published in the online archive of Tagesschau in 2025.
 
-!! Please note that running all code might be time consuming (on my laptop it took 21 min).
-
 
 
 # Loop for Webscraping the Tagesschau Archive in January of 2025
