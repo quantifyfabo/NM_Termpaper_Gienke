@@ -7,25 +7,20 @@ library(ggplot2)
 library(sjPlot)
 library(modelsummary)
 library(gt)
+library(car)
 
 
-#check for correlation
-analysis_corr <- analysis_country %>%
-  filter(n_events > 0) # minimum of 1 case in emdata
 
-# Pearson corr with n_events and ts articles
-cor(
-  analysis_corr$ts_articles,
-  analysis_corr$n_events,
-  method = "pearson"
-)
+# check for multicollinearity
+vif(model_severity)
 
-# correlation of articles and total deaths
-cor(
-  analysis_corr$ts_articles,
-  analysis_corr$total_deaths,
-  method = "pearson"
-)
+
+#check for correlation individually
+analysis_corr %>%
+  select(ts_articles, n_events, total_deaths) %>%
+  cor(method = "pearson", use = "complete.obs")
+
+
 
 # Spearmann correlation because data is unequal
 cor(
@@ -146,63 +141,6 @@ plot_model(
 
 
 # visualize relationshop between ts_articles and n_events
-
-ggplot(
-  analysis_country,
-  aes(
-    x = n_events,
-    y = ts_articles,
-    color = region
-  )
-) +
-  geom_point(
-    alpha = 0.7,
-    size = 2
-  ) +
-  scale_x_log10() +
-  scale_y_log10() +
-  labs(
-    x = "Number of natural disaster events (EM-DAT)",
-    y = "Number of Tagesschau disaster articles",
-    color = "Region"
-  ) +
-  theme_minimal(base_size = 13) +
-  theme(
-    panel.grid.minor = element_blank(),
-    legend.position = "right",
-    legend.title = element_text(size = 11),
-    legend.text = element_text(size = 10)
-  )
-
-
-# same scatter but with total deaths
-ggplot(
-  analysis_country,
-  aes(
-    x = total_deaths,
-    y = ts_articles,
-    color = region
-  )
-) +
-  geom_point(
-    alpha = 0.7,
-    size = 2
-  ) +
-  scale_x_log10() +
-  scale_y_log10() +
-  labs(
-    x = "Total deaths from natural disasters (EM-DAT)",
-    y = "Number of Tagesschau disaster articles",
-    color = "Region"
-  ) +
-  theme_minimal(base_size = 13) +
-  theme(
-    panel.grid.minor = element_blank(),
-    legend.position = "right",
-    legend.title = element_text(size = 11),
-    legend.text = element_text(size = 10)
-  )
-
 
 
 
