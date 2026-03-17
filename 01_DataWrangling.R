@@ -165,3 +165,6 @@ emdat_dominant_type <- emdat_type_counts %>%
 # add together (new dataset: emdat_country) on country level with variables on count, death, injured, affected, dominant type, dominant share
 emdat_country <- emdat_country_base %>%
   left_join(emdat_dominant_type, by = "iso")
+
+
+

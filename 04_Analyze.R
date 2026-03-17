@@ -7,6 +7,7 @@ library(gt)
 library(MASS)
 library(car)
 library(gt)
+library(scales)
 
 
 # load final dataset (Final_Dataset_CountryAnalysis.csv)
@@ -54,32 +55,36 @@ vif_values
 
 
 
-# compare regions (descriptive)
-region_table <- analysis_country %>%
-  group_by(region) %>%
-  summarise(
-    ts_articles = sum(ts_articles, na.rm = TRUE),
-    n_events = sum(n_events, na.rm = TRUE),
-    .groups = "drop"
-  ) %>%
-  mutate(
-    article_share = ts_articles / sum(ts_articles),
-    event_share = n_events / sum(n_events),
-    coverage_diff = (article_share - event_share) * 100
-  ) %>%
-  select(region, ts_articles, n_events, coverage_diff) %>%
-  arrange(desc(coverage_diff))
+# NB-Modell: aV remains 'raw' (ts_articles), UVs logged
+nb_full <- glm.nb(
+  ts_articles ~ 
+    log(n_events + 1) + 
+    log(total_deaths + 1) + 
+    log(total_injured + 1) + 
+    log(total_affected + 1) + 
+    log(gdp_2023) + 
+    log(population_2023) + 
+    log(dist_to_germany) + 
+    democracy_vdem,
+  data = analysis_country_robust
+)
 
-region_table %>%
-  gt() %>%
-  cols_label(
-    region = "Region",
-    ts_articles = "TS Articles",
-    n_events = "Disaster Events",
-    coverage_diff = "Coverage Difference (%)"
-  ) %>%
-  fmt_number(columns = coverage_diff, decimals = 1) %>%
-  grand_summary_rows(
-    columns = c(ts_articles, n_events),
-    fns = list("Total (n)" = ~sum(.))
-  )
+summary(nb_full)
+
+# Model with interaction of vdem and deaths
+nb_interaction <- glm.nb(
+  ts_articles ~ 
+    log(total_deaths + 1) * democracy_vdem +
+    log(n_events + 1) + 
+    log(gdp_2023) + 
+    log(dist_to_germany),
+  data = analysis_country_robust
+)
+
+summary(nb_interaction)
+
+# visualize
+plot_model(nb_interaction, type = "int") + 
+  theme_minimal() +
+  labs(title = "Interaktion: Disaster Severity x Democracy",
+       y = "Predicted Number of Articles")

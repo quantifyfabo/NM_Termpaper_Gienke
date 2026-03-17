@@ -1,19 +1,15 @@
 # By Fabian G.
-# Purpose of this file
 
 # This script identifies the country referenced in Tagesschau disaster-related
 # news articles. It uses a dictionary-based approach with country names and common
 # aliases to automatically detect countries in the English text and assign ISO3country codes.
-
 # Articles that cannot be classified automatically are exported for manual country labeling and re-imported.
 # Automatic and manual labels are then combined into a final country variable.
 
 # Based on the final ISO3 country codes, a region variable is added. The script
 # then aggregates Tagesschau disaster articles to the country level and merges
 # the resulting data with the country-level EM-DAT dataset.
-
 # The output is a merged country-level dataset combining real disaster exposure and media coverage.
-
 # Controll variables on GDP, Population and VDEM are added
 
 library(dplyr)
