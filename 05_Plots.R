@@ -9,12 +9,8 @@ library(car)
 library(gt)
 library(corrplot)
 
-
-
-
 # load final dataset (Final_Dataset_CountryAnalysis.csv)
 analysis_country <- read.csv('/Users/fabiangi/Documents/Goethe Uni/Semester 3/VP Naturkatastrophen/Paper_Project/R_Project_Termpaper/NM_Termpaper_Gienke/analysis_country_final.csv')
-
 
 # -- Plot R1
 # show individual correlations
@@ -37,8 +33,6 @@ corrplot(
   number.cex = 0.7
 )
 # --
-
-
 
 # Plot full regression
 # LM
