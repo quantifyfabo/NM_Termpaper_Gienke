@@ -161,8 +161,6 @@ region_table %>%
 
 
 # regions as diagramm
-# Vorbereitung der Labels (mit absoluten Zahlen für die Legende oder den Text)
-# Gesamtzahlen für das Subtitle/Anmerkung berechnen
 total_articles <- sum(region_table$ts_articles)
 total_events <- sum(region_table$n_events)
 
@@ -191,7 +189,7 @@ ggplot(region_table, aes(x = reorder(region, coverage_diff), y = coverage_diff, 
 # apply same for iso (countries) --> Table to check percentage difference in coverage/events on country lvl
 
 
-# Berechnung auf ISO-Ebene
+# Berechnung auf ISO lvl
 country_bias <- analysis_country %>%
   filter(!is.na(iso)) %>% 
   group_by(iso) %>%
